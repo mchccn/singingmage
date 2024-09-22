@@ -87,7 +87,7 @@ function core(query, fn) {
                         .replace(/in'/g, "ing")
                         .replace(/[,?!\.]$/, "")
                         .normalize("NFD")
-                        .replace(/\p{Diacritic}/gu, "")
+                        .replace(/[\u0300-\u036f]/g, "")
                         .trim();
 
                     if (!formatted) return undefined;
