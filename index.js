@@ -63,54 +63,54 @@ register("command", () => {
 }).setName("killsinger");
 
 function core(query, fn) {
-    FileLib.getUrlContent("https://lrclib.net/api/search?q=" + query)
-        .then((text) => {
-            const raw = JSON.parse(text)[0].syncedLyrics;
+    try {
+        const text = FileLib.getUrlContent("https://lrclib.net/api/search?q=" + query);
 
-            const parsed = raw
-                .split("\n")
-                .filter(Boolean)
-                .map((line) => {
-                    const [timestamp, lyric] = line
-                        .trim()
-                        .slice(1)
-                        .split("]")
-                        .map((x) => x.trim());
+        const raw = JSON.parse(text)[0].syncedLyrics;
 
-                    const [minutes, seconds] = timestamp.split(":").map(Number);
+        const parsed = raw
+            .split("\n")
+            .filter(Boolean)
+            .map((line) => {
+                const [timestamp, lyric] = line
+                    .trim()
+                    .slice(1)
+                    .split("]")
+                    .map((x) => x.trim());
 
-                    const ms = Math.round((minutes * 60 + seconds) * 1000);
+                const [minutes, seconds] = timestamp.split(":").map(Number);
 
-                    const formatted = lyric
-                        .toLowerCase()
-                        .replace(/in'/g, "ing")
-                        .replace(/[,?!\.]$/, "")
-                        .normalize("NFD")
-                        .replace(/[\u0300-\u036f]/g, "")
-                        .trim();
+                const ms = Math.round((minutes * 60 + seconds) * 1000);
 
-                    if (!formatted) return undefined;
+                const formatted = lyric
+                    .toLowerCase()
+                    .replace(/in'/g, "ing")
+                    .replace(/[,?!\.]$/, "")
+                    .normalize("NFD")
+                    .replace(/[\u0300-\u036f]/g, "")
+                    .trim();
 
-                    return [formatted, ms];
-                })
-                .filter(Boolean);
+                if (!formatted) return undefined;
 
-            const first = parsed[0][1];
-            parsed.forEach((x) => (x[1] -= first));
+                return [formatted, ms];
+            })
+            .filter(Boolean);
 
-            const singer = new SingingMage(fn, () => ChatLib.chat(`&c&l[SingingMage] &r&fDone singing!`));
+        const first = parsed[0][1];
+        parsed.forEach((x) => (x[1] -= first));
 
-            console.log(parsed);
+        const singer = new SingingMage(fn, () => ChatLib.chat(`&c&l[SingingMage] &r&fDone singing!`));
 
-            parsed.forEach(([lyric, delay], i) => singer.read(lyric, delay - (parsed[i - 1] ? parsed[i - 1][1] : 0)));
+        console.log(parsed);
 
-            singer.sing();
-        })
-        .catch((error) => {
-            console.log(error);
+        parsed.forEach(([lyric, delay], i) => singer.read(lyric, delay - (parsed[i - 1] ? parsed[i - 1][1] : 0)));
 
-            ChatLib.chat(`&c&l[SingingMage] &r&cFailed to fetch lyrics!`);
-        });
+        singer.sing();
+    } catch (error) {
+        console.log(error);
+
+        ChatLib.chat(`&c&l[SingingMage] &r&cFailed to fetch lyrics!`);
+    }
 }
 
 function kill() {
