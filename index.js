@@ -1,4 +1,3 @@
-import { request } from "requestV2";
 import { data } from "./data";
 import { SingingMage } from "./SingingMage";
 
@@ -64,7 +63,7 @@ register("command", () => {
 }).setName("killsinger");
 
 function core(query, fn) {
-    request("https://lrclib.net/api/search?q=" + query)
+    FileLib.getUrlContent("https://lrclib.net/api/search?q=" + query)
         .then((text) => {
             const raw = JSON.parse(text)[0].syncedLyrics;
 

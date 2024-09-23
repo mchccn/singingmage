@@ -4,5 +4,5 @@
     "version": "0.0.1",
     "entry": "index.js",
     "description": "/singingmage",
-    "requires": ["requestV2", "PogData"]
+    "requires": ["PogData"]
 }
