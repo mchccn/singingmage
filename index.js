@@ -85,9 +85,8 @@ function core(query, fn) {
                 const formatted = lyric
                     .toLowerCase()
                     .replace(/in'/g, "ing")
+                    .replace(/aingt/g, "ain't") // cba with proper regex rn
                     .replace(/[,?!\.]$/, "")
-                    .normalize("NFD")
-                    .replace(/[\u0300-\u036f]/g, "")
                     .trim();
 
                 if (!formatted) return undefined;
